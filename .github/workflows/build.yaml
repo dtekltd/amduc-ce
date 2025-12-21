@@ -4,7 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        required: true
+        required: false
+        description: "Tag or version to build (leave empty for main branch)"
         type: string
 
 permissions:
@@ -25,15 +26,15 @@ jobs:
           fetch-depth: 0
           fetch-tags: true
 
-      - name: Checkout Tag (if version != 0)
-        if: ${{ inputs.version != '0' }}
+      - name: Checkout Tag (if version is not empty)
+        if: ${{ inputs.version != '' }}
         run: |
           git checkout ${{ inputs.version }}
 
-      - name: Ensure Main (if version == 0)
-        if: ${{ inputs.version == '0' }}
+      - name: Ensure Main (if version is empty)
+        if: ${{ inputs.version == '' }}
         run: |
-          echo "Version is 0, staying on main branch"
+          echo "Version is empty, staying on main branch"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
