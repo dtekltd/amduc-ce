@@ -1,1 +1,1 @@
-Build PCMT Server
+Build AmDuc Server

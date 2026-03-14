@@ -1,4 +1,4 @@
-name: Build PCMT Server
+name: Build AmDuc Server
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
-          repository: "dtekltd/pcmt"
+          repository: "dtekltd/amduc"
           token: ${{ secrets.WORKFLOW_PAT }}
           ref: main
           fetch-depth: 0
@@ -36,30 +36,17 @@ jobs:
         run: |
           echo "Version is empty, staying on main branch"
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "24.0.1"
-          cache: "npm"
-          cache-dependency-path: "acp/package-lock.json"
-
-      - name: Build ACP App
-        working-directory: ./acp
-        run: |
-          npm install
-          npm run build
-
       - name: Setup Go
         uses: actions/setup-go@v4
         with:
           go-version: "1.24"
           cache: true
 
-      - name: Build PCMT Server
+      - name: Build AmDuc Server
         working-directory: .
         run: |
           set -e
-          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./pcmt .
+          CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o ./amduc .
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -77,4 +64,4 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/pcmt-ce:latest
+            ghcr.io/${{ github.repository_owner }}/amduc-ce:latest
